@@ -1,24 +1,25 @@
-# 👻 GHOST Token
+# 👻 Ghost Token (GHOST / GHST)
 
 **Version:** v1.0.0-alpha
 **Status:** Authoritative Specification
 
-GHOST is a **cross-chain token** available on **Solana** and **Sui**, designed for long-term ecosystem growth with clear separation between **devnet testing** and **mainnet production**.
+Ghost is a **cross-chain token system** deployed on **Solana** and **Sui**, designed with a strict separation between **devnet testing** and **mainnet production**.
+
+This repository contains **contracts, metadata, assets, and documentation** for both environments, with zero ambiguity and auditor-grade clarity.
 
 ---
 
 ## 🌐 What “Cross-Chain” Means
 
-* ✅ Same token **identity and brand** across chains
-* ❌ Not a single global supply (unless a future bridge enforces it)
+Ghost is **cross-chain by design**, not by bridge.
 
-GHOST exists **natively** on multiple blockchains with:
+* ✅ Same token **identity**, **symbol**, and **branding** across chains
+* ❌ No shared global supply (in v1.x)
+* ❌ No automatic mint/burn parity
 
-* the same symbol (`GHOST`)
-* the same purpose
-* **chain-specific parameters** (decimals, max supply)
+Each chain hosts a **native deployment** with **chain-specific parameters** (decimals, max supply, standards).
 
-This model is used by established tokens such as **USDC**, **USDT**, and **WETH**.
+This model is used by established assets such as **USDC**, **USDT**, and **WETH**.
 
 ---
 
@@ -26,23 +27,32 @@ This model is used by established tokens such as **USDC**, **USDT**, and **WETH*
 
 ### Devnet (Testing Only)
 
-| Chain         | Token    | Purpose           |
-| ------------- | -------- | ----------------- |
-| Solana Devnet | **GHST** | Faucet test token |
-| Sui Devnet    | **GHST** | Faucet test token |
+| Chain         | Token | Purpose           |
+| ------------- | ----- | ----------------- |
+| Solana Devnet | GHST  | Faucet test token |
+| Sui Devnet    | GHST  | Faucet test token |
 
-> **GHST is devnet-only**
->
-> * Never bridged
-> * Never deployed to mainnet
-> * Has no monetary or market value
+**GHST** is:
+
+* Devnet-only
+* Never bridged
+* Never deployed to mainnet
+* Has **no monetary or market value**
+
+---
 
 ### Mainnet (Production)
 
-| Chain          | Token     | Symbol |
-| -------------- | --------- | ------ |
-| Solana Mainnet | **GHOST** | GHOST  |
-| Sui Mainnet    | **GHOST** | GHOST  |
+| Chain          | Token       | Symbol |
+| -------------- | ----------- | ------ |
+| Solana Mainnet | Ghost Token | GHOST  |
+| Sui Mainnet    | Ghost Token | GHOST  |
+
+Mainnet tokens:
+
+* Have fixed max supply per chain
+* Have **no faucet**
+* Are production assets
 
 ---
 
@@ -55,8 +65,8 @@ This model is used by established tokens such as **USDC**, **USDT**, and **WETH*
 | Symbol     | GHOST          |
 | Decimals   | 9              |
 | Max Supply | 18,446,000,000 |
-| Faucet     | ❌ Disabled     |
 | Standard   | SPL Token-2022 |
+| Faucet     | ❌ Disabled     |
 
 ---
 
@@ -83,7 +93,7 @@ This model is used by established tokens such as **USDC**, **USDT**, and **WETH*
 | Solana Devnet | 5,000 GHST   | 9        | ✅            |
 | Sui Devnet    | 5,000 GHST   | 18       | ✅            |
 
-* Open to **developers, users, and testers**
+* Open to developers, users, and testers
 * Cooldowns and rate limits apply
 * **No faucet exists on mainnet**
 
@@ -97,11 +107,13 @@ This model is used by established tokens such as **USDC**, **USDT**, and **WETH*
 * No automatic mint/burn parity
 * No bridge required
 
-This approach is:
+This model is:
 
-* Safe
-* Auditable
-* Exchange-friendly
+* ✅ Safe
+* ✅ Auditable
+* ✅ Exchange-friendly
+
+---
 
 ### Future Model (v2+, Optional)
 
@@ -113,16 +125,48 @@ A future hard-parity bridge would require:
 * Strict supply accounting
 * Third-party audits
 
-> 🚫 Not part of v1.0.0-alpha
+🚫 **Not part of v1.0.0-alpha**
+
+---
+
+## 📁 Repository Structure
+
+```
+ghost-token/
+├── assets/            # Token icons (SVG, PNG)
+├── metadata/          # Chain + network specific metadata
+├── sui/               # Sui Move packages
+│   ├── devnet/
+│   └── mainnet/
+├── solana/            # Solana configs & programs
+│   ├── devnet/
+│   └── mainnet/
+├── docs/              # Specifications & explanations
+├── scripts/           # Deployment helpers
+└── README.md
+```
+
+Each directory is **explicitly scoped**:
+
+* GHST vs GHOST
+* Devnet vs Mainnet
+* Sui vs Solana
+
+No files are shared across environments where that could cause risk.
 
 ---
 
 ## ⚠️ Devnet Disclaimer (Mandatory)
 
-> **GHST is a devnet-only test token.**
-> It has **no monetary value**, **no market value**, and **no guarantee of conversion** to mainnet GHOST.
->
-> GHST is provided strictly for development, testing, and demonstration purposes.
+**GHST is a devnet-only test token.**
+
+It has **no monetary value**, **no market value**, and **no guarantee of conversion** to mainnet GHOST.
+
+GHST exists strictly for:
+
+* Development
+* Testing
+* Demonstration
 
 ---
 
@@ -137,22 +181,12 @@ A future hard-parity bridge would require:
 
 ---
 
-## ✅ Status
-
-* GHOST is **cross-chain**
-* GHST is **devnet-only**
-* No naming conflicts
-* No supply ambiguity
-* Safe for Alpha
-* Ready for developers, users, and exchanges
-
----
-
 ## 📎 Links
 
-* Solana Program: *GhostFaucet (Devnet)*
-* Sui Module: *GhostFaucet (Devnet)*
-* Documentation: *Coming soon*
+* Token Icon: `assets/GHOST.svg`
+* Solana Program: **GhostFaucet** (Devnet)
+* Sui Module: **GhostFaucet** (Devnet)
+* Documentation: Coming soon
 
 ---
 

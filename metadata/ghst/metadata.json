@@ -1,0 +1,20 @@
+{
+  "name": "Ghost Devnet Token",
+  "symbol": "GHST",
+  "description": "GHST is a devnet-only test token for the Ghost Protocol ecosystem. It has no monetary value and is provided strictly for development, testing, and demonstration purposes.",
+  "decimals": 18,
+  "network": "sui-devnet",
+  "chain": "sui",
+  "token_type": "devnet-only",
+  "icon": "https://raw.githubusercontent.com/ghost-protocol-labs/ghost-token/refs/heads/main/assets/GHOST.svg",
+  "website": "https://ghostprotocol.dev",
+  "documentation": "https://ghostprotocol.dev/docs",
+  "faucet": true,
+  "attributes": {
+    "faucet_claim_amount": "5000",
+    "bridgeable": false,
+    "mainnet_equivalent": "GHOST",
+    "version": "v1.0.0-alpha"
+  },
+  "disclaimer": "GHST is a devnet-only test token. It has no monetary value, no market value, and no guarantee of conversion to mainnet GHOST."
+}
