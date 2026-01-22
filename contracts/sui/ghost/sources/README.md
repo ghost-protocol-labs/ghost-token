@@ -1,127 +1,139 @@
-# GHST — Ghost Test Token (Sui)
+# Sui Move Sources
 
-**GHST is a test-only token for development and experimentation.**  
-It has **no value**, **no governance role**, and **no relationship** to the GHOST mainnet token.
+This directory contains all **on-chain Move modules** for the Ghost Network on Sui. It is intentionally structured to separate **canonical mainnet assets**, **test-only assets**, **governance**, and **bridge safety logic**.
 
----
-
-## ⚠️ IMPORTANT DISCLAIMER
-
-> **GHST IS NOT GHOST.**
-
-- ❌ Not a mainnet token  
-- ❌ Not transferable to production systems  
-- ❌ Not bridged  
-- ❌ Not listed on any exchange  
-- ❌ Not governed by the Ghost DAO  
-
-GHST exists **solely** for **devnet / testnet usage**.
+> **Important:** Only the `ghost/` package is intended for **mainnet deployment**. The `ghst/` package is **strictly devnet/testnet** and contains compile-time guards preventing mainnet publish.
 
 ---
 
-## 📦 Location
+## 📁 Directory Structure
 
 ```
-
-contracts/sui/ghst-test/
-├── Move.toml
-├── README.md
-└── sources/
-└── ghst_token.move
-
+sources/
+├── ghost/                # Canonical GHOST token (MAINNET)
+│   ├── ghost_token.move
+│   ├── treasury.move
+│   ├── metadata.move
+│   └── specs/            # Move Prover specifications
+│
+├── dao/                  # DAO governance & timelock
+│   ├── dao.move
+│   ├── voting.move
+│   ├── timelock.move
+│   └── specs/
+│
+├── bridge/               # Sui-side bridge vault (lock/burn)
+│   ├── vault.move
+│   ├── events.move
+│   └── specs/
+│
+├── ghst/                 # GHST test token (DEVNET / TESTNET ONLY)
+│   ├── ghst_token.move
+│   ├── deny_bridge.move
+│   └── tests/
+│
+└── utils/                # Shared helpers
+    └── errors.move
 ```
 
 ---
 
-## 🎯 Purpose
+## 🪙 GHOST (Canonical Token)
 
-GHST is used for:
-- Wallet integration testing
-- Frontend development
-- Transaction flow simulations
-- Internal tooling and CI tests
+* **Symbol:** GHOST
+* **Total Supply:** 20,000,000,000 (fixed)
+* **Decimals:** 9
+* **Chain:** Sui (canonical)
+* **Mint Authority:** DAO-controlled TreasuryCap
 
-It allows rapid iteration **without touching production assets**.
+### Key Guarantees
 
----
-
-## 🪙 Token Parameters
-
-| Field | Value |
-|---|---|
-| Name | Ghost Test Token |
-| Symbol | GHST |
-| Decimals | 9 |
-| Supply | Variable (test-controlled) |
-| Network | Sui devnet / testnet only |
-| Standard | Sui `coin` framework |
+* Supply cap enforced at Move level
+* TreasuryCap uniqueness invariant
+* Metadata frozen post-deploy
+* Upgradeable only via DAO timelock
 
 ---
 
-## 🔐 Minting & Burning
+## 🧪 GHST (Test Token)
 
-- Minting is enabled via a local `TreasuryCap`
-- Burning is supported for test scenarios
-- No supply caps are enforced (by design)
+* **Purpose:** Development, testing, experimentation
+* **Networks:** Devnet / Testnet only
+* **Mainnet:** ❌ Explicitly forbidden
 
-⚠️ **Mint authority is NOT DAO-controlled**  
-This is intentional for testing convenience.
+### Safety Controls
 
----
-
-## 🔒 Safety & Isolation Guarantees
-
-GHST is fully isolated from production systems:
-
-- Separate Move package
-- Separate coin type
-- Separate metadata
-- No bridge hooks
-- No shared code with GHOST
-
-This ensures:
-- Zero risk to mainnet supply
-- No indexer confusion
-- No exchange misclassification
+* Compile-time guard blocking mainnet publish
+* Bridge-deny hook prevents cross-chain use
+* Excluded from all economic accounting
 
 ---
 
-## 🚫 Explicit Non-Goals
+## 🗳️ DAO & Governance
 
-GHST will **never**:
-- Be deployed to Sui mainnet
-- Be wrapped or bridged
-- Be listed on CoinMarketCap or CoinGecko
-- Be upgrade-migrated into GHOST
-- Be governed by the DAO
+The DAO modules manage:
 
----
+* TreasuryCap custody
+* Token minting/burning
+* Metadata upgrades
+* Bridge pause / relayer rotation
 
-## 🧪 Testing Helpers
+All privileged actions:
 
-The module exposes:
-- `init_for_test` (test-only initializer)
-- Direct mint and burn entry functions
-
-These are intended for:
-- Unit tests
-- Integration tests
-- Localnet simulations
+1. Require DAO proposal
+2. Pass quorum voting
+3. Are subject to a timelock delay
 
 ---
 
-## 🔍 Audit Notes
+## 🌉 Bridge (Sui Side)
 
-- GHST is excluded from audits covering:
-  - Canonical GHOST
-  - DAO governance
-  - Bridge security
-- GHST may be modified or deleted without notice
+The bridge vault locks canonical GHOST and emits events consumed by off-chain relayers.
 
-Auditors should **ignore GHST for economic analysis**.
+### Invariants
+
+* Locked GHOST + wrapped GHOST = constant supply
+* Nonce monotonicity (no replay)
+* Unlock requires verified burn proof
+
+GHST is **explicitly excluded** from bridging.
 
 ---
 
-## 📜 License
+## 📐 Formal Verification
 
-See the root `LICENSE` file.
+Each critical module has an accompanying `specs/` directory containing:
+
+* Supply invariants
+* Authority constraints
+* Nonce monotonicity proofs
+
+These specs are enforced in CI via **Move Prover (SMT-backed)**.
+
+---
+
+## 🚫 What Is NOT Here
+
+* No frontend code
+* No relayer logic
+* No Solana programs
+
+Those live in separate directories or repositories.
+
+---
+
+## ✅ Deployment Policy Summary
+
+| Module     | Network         |
+| ---------- | --------------- |
+| `ghost/*`  | Mainnet ✔       |
+| `dao/*`    | Mainnet ✔       |
+| `bridge/*` | Mainnet ✔       |
+| `ghst/*`   | Dev/Test only ❌ |
+
+---
+
+## 🧾 Auditor Note
+
+> The separation between canonical assets, test assets, governance, and bridge logic is deliberate and designed to reduce blast radius, simplify audits, and enforce supply invariants at the type system level.
+
